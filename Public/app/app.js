@@ -48,12 +48,12 @@
                 templateUrl: '/app/templates/editBook.html',
                 controller: 'EditBookController',
                 controllerAs: 'bookEditor',
-                resolve: {
-                    books: function (dataService) {
-                        //throw 'error getting books';
-                        return dataService.getAllBooks();
-                    }
-                }
+                //resolve: {
+                //    books: function (dataService) {
+                //        //throw 'error getting books';
+                //        return dataService.getAllBooks();
+                //    }
+                //}
             })
             .otherwise('/');
 
