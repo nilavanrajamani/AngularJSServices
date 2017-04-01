@@ -10,7 +10,9 @@
             getAllBooks: getAllBooks,
             getAllReaders: getAllReaders,
             getBookByID: getBookByID,
-            updateBook: updateBook
+            updateBook: updateBook,
+            addBook: addBook,
+            deleteBook: deleteBook
         };
 
         //function getAllBooks() {
@@ -67,17 +69,38 @@
                 url: 'api/books',
                 headers: {
                     'PS-BookLogger-Version': constants.APP_VERSION
-                }
+                },
+                transformResponse: transformGetBooks
             })
+            //return $http.get('api/books/')
             .then(sendResponseData)
             .catch(sendGetBooksError);
         }
 
+        function transformGetBooks(data, headersGetter) {
+
+            console.log("Data: " + data);
+            console.log("headersGetter: " + headersGetter);
+
+            var transformed = angular.fromJson(data);
+
+            console.log("transformed: " + transformed);
+
+            transformed.forEach(function (currentValue, index, array) {
+                currentValue.dateDownloaded = new Date();
+            });
+
+            console.log(transformed);
+            return transformed;
+
+        }
+
         function getBookByID(bookID) {
-            return $http({
-                method: 'GET',
-                url: 'api/books/' + bookID
-            })
+            //return $http({
+            //    method: 'GET',
+            //    url: 'api/books/' + bookID
+            //})
+            return $http.get('api/books/' + bookID)
             .then(sendResponseData)
             .catch(sendGetBooksError);
         }
@@ -141,6 +164,53 @@
             }, 1500);
 
             return deferred.promise;
+        }
+
+        function addBook(newBook) {
+
+            //return $http
+            //    ({
+            //        method: 'POST',
+            //        url: 'api/books',
+            //        data: newBook
+            //    })
+            return $http.post('api/books', newBook, {
+                transformRequest: transformPostRequest
+            })
+                .then(addBookSuccess)
+                .catch(addBookError);
+        }
+
+        function transformPostRequest(data, headersGetter) {
+            data.newBook = true;
+            console.log(data);
+
+            return JSON.stringify(data);
+        }
+
+        function addBookSuccess(response) {
+            return 'Book added: ' + response.config.data.title;
+        }
+
+        function addBookError(response) {
+            return $q.reject('Error adding Book. (HTTP status: ' + response.status + ')');
+        }
+
+        function deleteBook(bookID) {
+            return $http({
+                method: 'DELETE',
+                url: 'api/books/' + bookID
+            })
+                .then(deleteBookSuccess)
+                .catch(deleteBookError);
+        }
+
+        function deleteBookSuccess() {
+            return 'Book deleted';
+        }
+
+        function deleteBookError() {
+            return $q.reject('Error adding Book. (HTTP status: ' + response.status + ')');
         }
     }
 

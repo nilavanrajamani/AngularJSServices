@@ -1,8 +1,11 @@
 ﻿(function () {
     angular.module('app')
-           .controller('EditBookController', ['$routeParams', 'books', '$cookies', '$cookieStore', 'dataService', '$log', '$location', EditBookController]);
+           .controller('EditBookController', ['$routeParams', 'books',
+               '$cookies', '$cookieStore', 'dataService',
+               '$log', '$location', 'BooksResource', EditBookController]);
 
-    function EditBookController($routeParams, books, $cookie, $cookieStore, dataService, $log, $location) {
+    function EditBookController($routeParams, books, $cookie, $cookieStore,
+        dataService, $log, $location, BooksResource) {
         var vm = this;
 
         //dataService.getAllBooks()
@@ -13,12 +16,18 @@
         //    console.log($routeParams.bookID);
         //});
 
-        dataService.getBookByID($routeParams.bookID)
-                   .then(getBooksSuccess)
-                   .catch(getBookError);
+
+
+        //dataService.getBookByID($routeParams.bookID)
+        //           .then(getBooksSuccess)
+        //           .catch(getBookError);
+
+        vm.currentBook = BooksResource.get({ book_id: $routeParams.bookID });
+        $log.log(vm.currentBook);
 
         function getBooksSuccess(book) {
             vm.currentBook = book;
+            $log.info(book);
             $cookieStore.put('lastEdited', vm.currentBook);
         }
 
@@ -31,9 +40,12 @@
         }
 
         vm.saveBook = function () {
-            dataService.updateBook(vm.currentBook)
-                       .then(updateBookSuccess)
-                       .catch(updateBookError);
+            //dataService.updateBook(vm.currentBook)
+            //           .then(updateBookSuccess)
+            //           .catch(updateBookError);
+
+            vm.currentBook.$update();
+            $location.path("/");
         }
 
         function updateBookSuccess(message) {

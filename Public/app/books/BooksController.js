@@ -1,10 +1,12 @@
 (function () {
 
     angular.module('app')
-        .controller('BooksController', ['$q', 'books', 'dataService', 'badgeService', '$cookies', '$cookieStore', '$log', BooksController]);
+        .controller('BooksController', ['$q', 'books', 'dataService', 'badgeService',
+            '$cookies', '$cookieStore', '$log', '$route', 'BooksResource', BooksController]);
 
 
-    function BooksController($q, books, dataService, badgeService, $cookies, $cookieStore, $log) {
+    function BooksController($q, books, dataService, badgeService, $cookies,
+        $cookieStore, $log, $route, BooksResource) {
 
         var vm = this;
 
@@ -33,10 +35,12 @@
         }
         */
 
-        dataService.getAllBooks()
-            .then(getBooksSuccess, null, getBooksNotification)
-            .catch(errorCallback)
-            .finally(getAllBooksComplete);
+        //dataService.getAllBooks()
+        //    .then(getBooksSuccess, null, getBooksNotification)
+        //    .catch(errorCallback)
+        //    .finally(getAllBooksComplete);
+
+        vm.allBooks = BooksResource.query();
 
         function getBooksSuccess(books) {
             //throw 'error in success handler';
@@ -72,6 +76,21 @@
 
         function getAllReadersComplete() {
             //console.log('getAllReaders has completed');
+        }
+
+        vm.deleteBook = function (bookID) {
+            dataService.deleteBook(bookID)
+                       .then(deleteBookSuccess)
+                       .catch(deleteBookError);
+        };
+
+        function deleteBookSuccess(message) {
+            $log.info(message);
+            $route.reload();
+        }
+
+        function deleteBookError(message) {
+            $log.error(errorMessage);
         }
 
         vm.getBadge = badgeService.retrieveBadge;

@@ -95,6 +95,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\books\EditBookController.js" />
+    <Content Include="app\services\bookLoggerInterceptor.js" />
+    <Content Include="app\services\BooksResource.js" />
     <Content Include="app\templates\editBook.html" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">

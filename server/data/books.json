@@ -34,5 +34,17 @@
         "title": "Green Eggs and Ham",
         "author": "Dr. Seuss",
         "year_published": "1960"
+    },
+    {
+        "book_id": 62,
+        "title": "Curious George",
+        "author": "H. A. Ray",
+        "year_published": "1992"
+    },
+    {
+        "book_id": 63,
+        "title": "Alice's Adventure in Wonderland",
+        "author": "Lewis Carroll",
+        "year_published": "1865"
     }
 ]
