@@ -28,8 +28,10 @@
 
     }]);
 
-    app.config(['booksProvider', '$routeProvider', '$logProvider', '$httpProvider',
-        function (booksProvider, $routeProvider, $logProvider, $httpProvider) {
+    app.config(['booksProvider', '$routeProvider', '$logProvider', '$httpProvider', '$provide',
+    function (booksProvider, $routeProvider, $logProvider, $httpProvider, $provide) {
+
+        $provide.decorator('$log', ['$delegate', 'books', logDecorator]);
 
         booksProvider.setIncludeVersionInTitle(true);
         $logProvider.debugEnabled(true);
@@ -61,6 +63,37 @@
             .otherwise('/');
 
     }]);
+
+    function logDecorator($delegate, books) {
+        function log(message) {
+            message += '-' + new Date() + books.appName + ')';
+            $delegate.log(message);
+        }
+
+        function info(message) {
+            $delegate.info(message);
+        }
+
+        function warn(message) {
+            $delegate.warn(message);
+        }
+
+        function error(message) {
+            $delegate.error(message);
+        }
+
+        function debug(message) {
+            $delegate.debug(message);
+        }
+
+        return {
+            log: log,
+            info: info,
+            warn: warn,
+            error: error,
+            debug: debug
+        }
+    }
 
     app.run(['$rootScope', function ($rootScope) {
 

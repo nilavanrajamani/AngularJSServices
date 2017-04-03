@@ -2,15 +2,23 @@
 
     angular.module('app')
         .controller('BooksController', ['$q', 'books', 'dataService', 'badgeService',
-            '$cookies', '$cookieStore', '$log', '$route', 'BooksResource', BooksController]);
+            '$cookies', '$cookieStore', '$log', '$route', 'BooksResource', 'currentUser', BooksController]);
 
 
     function BooksController($q, books, dataService, badgeService, $cookies,
-        $cookieStore, $log, $route, BooksResource) {
+        $cookieStore, $log, $route, BooksResource, currentUser) {
 
         var vm = this;
 
         vm.appName = books.appName;
+
+        dataService.getUserSummary()
+                   .then(getUserSummarySuccess);
+
+        function getUserSummarySuccess(summaryData) {
+            console.log(summaryData);
+            vm.summaryData = summaryData;
+        }
 
         /*
         The following section of code performs the same function as the larger section
@@ -72,6 +80,7 @@
 
         function getReadersSuccess(readers) {
             vm.allReaders = readers;
+            $log.log('All readers retrieved');
         }
 
         function getAllReadersComplete() {
@@ -97,7 +106,10 @@
 
         vm.favoriteBook = $cookies.favoriteBook;
 
-        vm.lastEdited = $cookieStore.get('lastEdited');
+        //vm.lastEdited = $cookieStore.get('lastEdited');
+        vm.currentUser = currentUser;
+        $log.info("currentUser");
+        $log.info(currentUser);
 
         $log.log('logging with log');
         $log.info('logging with info');
